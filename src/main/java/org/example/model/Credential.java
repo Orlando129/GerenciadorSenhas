@@ -5,9 +5,9 @@ import java.io.Serializable;
 //Classe para representar uma credencial(com: serviço, nome do usuario e senha criptografada)
 public class Credential implements Serializable {
 
-    private String service;
-    private String username;
-    private String encryptedPassword;
+    private final String service;
+    private final String username;
+    private final String encryptedPassword;
 
     //Construtor para criar a credencial
     public Credential(String service, String username, String encryptedPassword) {
