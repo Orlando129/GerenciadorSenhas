@@ -7,49 +7,47 @@ import org.example.service.PasswordGenerator;
 import org.example.service.PasswordLeakChecker;
 import org.example.service.TwoFactorAuth;
 
+import java.io.Console;
 import java.util.List;
 import java.util.Scanner;
 
-
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int option;
-        int tamanho;
-        String service;
-        String username;
-        String password;
-        String senhaVerificada;
-        //  Verificação 2FA
+
+        // Solicita a senha mestra no início, para usar na criptografia
+        String masterPassword = readMasterPassword();
+
+        // Verificação 2FA
         if (!TwoFactorAuth.run2FA(sc)) {
             System.out.println("Falha na autenticação 2FA. Encerrando o programa.");
             return;
         }
 
         while(true){
-            System.out.println("Gerenciador de Senhas");
+            System.out.println("\nGerenciador de Senhas");
             System.out.println("1. Cadastrar nova senha");
-            System.out.println("2. Listar servicos cadastrados");
+            System.out.println("2. Listar serviços cadastrados");
             System.out.println("3. Gerar senha segura");
             System.out.println("4. Verificar se a senha foi vazada");
             System.out.println("5. Sair");
             System.out.print("Escolha: ");
-            option = sc.nextInt(); //Le a opcao do usuario
-            sc.nextLine(); //Limpa o buffer
+            int option = sc.nextInt();
+            sc.nextLine(); // Limpa buffer
 
             switch (option){
                 case 1:
-                //Coleta dados para cadastrar uma nova credencial
-                    System.out.print("Nome do servico: ");
-                    service = sc.nextLine();
-                    System.out.print("Usuario: ");
-                    username = sc.nextLine();
+                    // Coleta dados para cadastrar uma nova credencial
+                    System.out.print("Nome do serviço: ");
+                    String service = sc.nextLine();
+                    System.out.print("Usuário: ");
+                    String username = sc.nextLine();
                     System.out.print("Senha: ");
-                    password = sc.nextLine();
-                    try{
-                        String encryptedPassword = EncryptionService.encrypt(password);
+                    String password = sc.nextLine();
+
+                    try {
+                        // Passa a senha mestra para o metodo de criptografia
+                        String encryptedPassword = EncryptionService.encrypt(password, masterPassword);
 
                         Credential credential = new Credential(service, username, encryptedPassword);
 
@@ -61,19 +59,28 @@ public class Main {
                         e.printStackTrace();
                     }
                     break;
+
                 case 2:
                     List<Credential> credentials = FileStorage.loadCredentials();
                     if (credentials.isEmpty()){
-                        System.out.println("Nenhuma credential cadastrada!");
+                        System.out.println("Nenhuma credencial cadastrada!");
                     } else {
                         for (Credential c : credentials){
-                            System.out.println(c);
+                            try {
+                                // Descriptografa a senha para mostrar
+                                String decryptedPassword = EncryptionService.decrypt(c.getEncryptedPassword(), masterPassword);
+                                System.out.printf("Serviço: %s, Usuário: %s, Senha: %s%n",
+                                        c.getService(), c.getUsername(), decryptedPassword);
+                            } catch (Exception e) {
+                                System.out.println("Erro ao descriptografar a senha do serviço " + c.getService());
+                            }
                         }
                     }
                     break;
+
                 case 3:
-                    System.out.print("Informe o tamanho da senha(minimo 12): ");
-                    tamanho = Integer.parseInt(sc.nextLine());
+                    System.out.print("Informe o tamanho da senha (mínimo 12): ");
+                    int tamanho = Integer.parseInt(sc.nextLine());
                     try {
                         String senhaGerada = PasswordGenerator.generate(tamanho);
                         System.out.println("Senha gerada: " + senhaGerada);
@@ -81,22 +88,39 @@ public class Main {
                         System.out.println("Erro: " + e.getMessage());
                     }
                     break;
+
                 case 4:
                     System.out.print("Digite a senha que deseja verificar: ");
-                    senhaVerificada = sc.nextLine();
+                    String senhaVerificada = sc.nextLine();
 
                     if (PasswordLeakChecker.isLeaked(senhaVerificada)){
-                        System.out.println("PERIGO: Essa senha ja apareceu em vazamentos!");
-                    } else{
+                        System.out.println("PERIGO: Essa senha já apareceu em vazamentos!");
+                    } else {
                         System.out.println("Essa senha é segura!");
                     }
                     break;
+
                 case 5:
                     System.out.println("Saindo!");
                     return;
+
                 default:
-                    System.out.println("Opcao invalida!");
+                    System.out.println("Opção inválida!");
             }
+        }
+    }
+
+    private static String readMasterPassword() {
+        Console console = System.console();
+        if (console != null) {
+            // Se for possível, lê a senha sem eco no terminal
+            char[] passwordChars = console.readPassword("Digite sua senha mestra: ");
+            return new String(passwordChars);
+        } else {
+            // Se estiver rodando numa IDE, lê com Scanner (com eco)
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Digite sua senha mestra: ");
+            return sc.nextLine();
         }
     }
 }
