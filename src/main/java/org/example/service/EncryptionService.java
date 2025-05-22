@@ -2,7 +2,7 @@ package org.example.service;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
@@ -12,10 +12,10 @@ import java.util.Base64;
 
 public class EncryptionService {
 
-    private static final int SALT_LENGTH = 16;  // 128 bits
-    private static final int IV_LENGTH = 16;    // AES block size
+    private static final int SALT_LENGTH = 16; // 128 bits
+    private static final int IV_LENGTH = 12;   // 96 bits, recomendado para GCM
+    private static final int TAG_LENGTH_BIT = 128; // Autenticação
 
-    // Gera chave AES a partir da senha mestra e salt
     private static SecretKeySpec generateKey(String masterPassword, byte[] salt) throws Exception {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         KeySpec spec = new PBEKeySpec(masterPassword.toCharArray(), salt, 65536, 128);
@@ -23,25 +23,22 @@ public class EncryptionService {
         return new SecretKeySpec(secret, "AES");
     }
 
-    // Gera salt aleatório
     private static byte[] generateSalt() {
         byte[] salt = new byte[SALT_LENGTH];
         new SecureRandom().nextBytes(salt);
         return salt;
     }
 
-    // Criptografa dados usando AES com salt e IV aleatórios
     public static String encrypt(String data, String masterPassword) throws Exception {
         byte[] salt = generateSalt();
         SecretKeySpec key = generateKey(masterPassword, salt);
 
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
         byte[] iv = new byte[IV_LENGTH];
         new SecureRandom().nextBytes(iv);
-        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        GCMParameterSpec gcmSpec = new GCMParameterSpec(TAG_LENGTH_BIT, iv);
 
-        cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, gcmSpec);
 
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
@@ -54,7 +51,6 @@ public class EncryptionService {
         return Base64.getEncoder().encodeToString(buffer.array());
     }
 
-    // Descriptografa dados, extraindo salt e IV do input
     public static String decrypt(String encryptedData, String masterPassword) throws Exception {
         byte[] decoded = Base64.getDecoder().decode(encryptedData);
 
@@ -71,10 +67,13 @@ public class EncryptionService {
 
         SecretKeySpec key = generateKey(masterPassword, salt);
 
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+        GCMParameterSpec gcmSpec = new GCMParameterSpec(TAG_LENGTH_BIT, iv);
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, key, gcmSpec);
 
         byte[] decrypted = cipher.doFinal(encrypted);
+
         return new String(decrypted);
     }
 }
