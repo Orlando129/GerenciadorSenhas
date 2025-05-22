@@ -17,7 +17,8 @@ Este projeto foi desenvolvido como parte da disciplina **Desenvolvimento Seguro*
 - API externa: [Have I Been Pwned - Passwords](https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange)
 - Leitura e escrita com `java.io` e `ObjectOutputStream`
 - O programa cria a pasta data automaticamente
-
+- Utilização da ferramenta "Sonar" para verificação de vazamentos de Segurança
+- O sonar esta automatizado no próprio Github, utilzando github workflow
 ---
 
 ## 🚀 Como Executar
