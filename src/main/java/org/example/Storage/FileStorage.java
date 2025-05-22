@@ -6,11 +6,12 @@ import org.example.model.Credential;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 //Responsavel por salvar e carregar as credenciais
 public class FileStorage {
     private static final String FILE_PATH = "data/credentials.dat";
-
+    private static final Logger LOGGER = Logger.getLogger(FileStorage.class.getName());
     //salva uma nova credencial no arquivo
     public static void saveCredential(Credential credential) {
         List<Credential> credentials = loadCredentials();//carrega as existentes
@@ -26,7 +27,8 @@ public class FileStorage {
                 out.writeObject(credentials); // Salva a lista de credenciais
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Erro ao salvar credenciais.");
+            LOGGER.warning("Erro ao salvar credenciais: " + e.getMessage());
         }
 
     }

@@ -10,9 +10,10 @@ import org.example.service.TwoFactorAuth;
 import java.io.Console;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class Main {
-
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String masterPassword = readMasterPassword();
@@ -78,7 +79,7 @@ public class Main {
             System.out.println("Cadastrado com sucesso!");
         } catch (Exception e) {
             System.out.println("Erro ao cadastrar nova senha!");
-            e.printStackTrace();
+            LOGGER.warning("Erro ao cadastrar senha: " + e.getMessage());
         }
     }
 
