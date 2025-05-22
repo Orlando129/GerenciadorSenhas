@@ -1,4 +1,5 @@
-package org.example;// Import já existente
+package org.example;
+
 import org.example.Storage.FileStorage;
 import org.example.model.Credential;
 import org.example.service.EncryptionService;
@@ -12,17 +13,18 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class Main {
-    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName()); //Uso de Logger no projeto pois o Sonarcloud recomendou
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String masterPassword = readMasterPassword();
 
+        //Autenticacao de dois fatores
         if (!TwoFactorAuth.run2FA(sc)) {
             LOGGER.warning("Falha na autenticação 2FA. Encerrando o programa.");
             return;
         }
-
+        //Mostra o menu enquanto a opcao escolhida seja difernte de 5
         int option;
         do {
             option = showMenu(sc);
@@ -30,8 +32,7 @@ public class Main {
         } while (option != 5);
     }
 
-    // ... readMasterPassword() permanece igual
-
+    //Menu
     private static int showMenu(Scanner sc) {
         System.out.println("\nGerenciador de Senhas");
         System.out.println("1. Cadastrar nova senha");
@@ -43,6 +44,7 @@ public class Main {
         return Integer.parseInt(sc.nextLine());
     }
 
+    //Metodo para o switch e case levar voce para o metodo desejado
     private static void handleOption(int option, Scanner sc, String masterPassword) {
         switch (option) {
             case 1 -> cadastrarNovaSenha(sc, masterPassword);
@@ -53,7 +55,7 @@ public class Main {
             default -> LOGGER.warning("Opção inválida selecionada.");
         }
     }
-
+    //Metodo para cadastrar Novas senhas criptografadas
     private static void cadastrarNovaSenha(Scanner sc, String masterPassword) {
         System.out.print("Nome do serviço: ");
         String service = sc.nextLine();
@@ -66,12 +68,12 @@ public class Main {
             String encryptedPassword = EncryptionService.encrypt(password, masterPassword);
             Credential credential = new Credential(service, username, encryptedPassword);
             FileStorage.saveCredential(credential);
-            LOGGER.info("Credencial cadastrada com sucesso para o serviço: " + service);
+            LOGGER.info("Credencial cadastrada com sucesso para o serviço: " + service); //Realiza o cadastro
         } catch (Exception e) {
-            LOGGER.warning("Erro ao cadastrar nova senha: " + e.getMessage());
+            LOGGER.warning("Erro ao cadastrar nova senha: " + e.getMessage()); //Se ocorrer erro a nova senha não é cadastrada
         }
     }
-
+    //Lista todos os seus servicos e descriptografa a senha para mostrar para voce
     private static void listarServicos(String masterPassword) {
         List<Credential> credentials = FileStorage.loadCredentials();
         if (credentials.isEmpty()) {
@@ -89,7 +91,7 @@ public class Main {
             }
         }
     }
-
+    //Metodo para gerar senha aleatoria e segura, do tamanho que voce escolher
     private static void gerarSenhaSegura(Scanner sc) {
         System.out.print("Informe o tamanho da senha (mínimo 12): ");
         int tamanho = Integer.parseInt(sc.nextLine());
@@ -101,7 +103,7 @@ public class Main {
             LOGGER.warning("Erro ao gerar senha: " + e.getMessage());
         }
     }
-
+    //Metodo para verificar se uma senha esta insegura ou nao
     private static void verificarSenhaVazada(Scanner sc) {
         System.out.print("Digite a senha que deseja verificar: ");
         String senhaVerificada = sc.nextLine();
@@ -112,6 +114,7 @@ public class Main {
             LOGGER.info("Essa senha é segura!");
         }
     }
+    //Metodo para Ler o a senha mestre
     private static String readMasterPassword() {
         Console console = System.console();
         if (console != null) {
