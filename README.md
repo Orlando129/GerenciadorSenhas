@@ -12,10 +12,11 @@ Este projeto foi desenvolvido como parte da disciplina **Desenvolvimento Seguro*
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Java 17+**
+- **Java 22+**
 - Criptografia **AES**
 - API externa: [Have I Been Pwned - Passwords](https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange)
 - Leitura e escrita com `java.io` e `ObjectOutputStream`
+- O programa cria a pasta data automaticamente
 
 ---
 
