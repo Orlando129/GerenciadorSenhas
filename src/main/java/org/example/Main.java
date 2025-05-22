@@ -1,5 +1,4 @@
-package org.example;
-
+package org.example;// Import já existente
 import org.example.Storage.FileStorage;
 import org.example.model.Credential;
 import org.example.service.EncryptionService;
@@ -14,12 +13,13 @@ import java.util.logging.Logger;
 
 public class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String masterPassword = readMasterPassword();
 
         if (!TwoFactorAuth.run2FA(sc)) {
-            System.out.println("Falha na autenticação 2FA. Encerrando o programa.");
+            LOGGER.warning("Falha na autenticação 2FA. Encerrando o programa.");
             return;
         }
 
@@ -30,17 +30,7 @@ public class Main {
         } while (option != 5);
     }
 
-    private static String readMasterPassword() {
-        Console console = System.console();
-        if (console != null) {
-            char[] passwordArray = console.readPassword("Digite a senha mestra: ");
-            return new String(passwordArray);
-        } else {
-            Scanner sc = new Scanner(System.in);
-            System.out.print("Digite a senha mestra: ");
-            return sc.nextLine();
-        }
-    }
+    // ... readMasterPassword() permanece igual
 
     private static int showMenu(Scanner sc) {
         System.out.println("\nGerenciador de Senhas");
@@ -59,8 +49,8 @@ public class Main {
             case 2 -> listarServicos(masterPassword);
             case 3 -> gerarSenhaSegura(sc);
             case 4 -> verificarSenhaVazada(sc);
-            case 5 -> System.out.println("Saindo!");
-            default -> System.out.println("Opção inválida!");
+            case 5 -> LOGGER.info("Saindo do programa.");
+            default -> LOGGER.warning("Opção inválida selecionada.");
         }
     }
 
@@ -76,27 +66,26 @@ public class Main {
             String encryptedPassword = EncryptionService.encrypt(password, masterPassword);
             Credential credential = new Credential(service, username, encryptedPassword);
             FileStorage.saveCredential(credential);
-            System.out.println("Cadastrado com sucesso!");
+            LOGGER.info("Credencial cadastrada com sucesso para o serviço: " + service);
         } catch (Exception e) {
-            System.out.println("Erro ao cadastrar nova senha!");
-            LOGGER.warning("Erro ao cadastrar senha: " + e.getMessage());
+            LOGGER.warning("Erro ao cadastrar nova senha: " + e.getMessage());
         }
     }
 
     private static void listarServicos(String masterPassword) {
         List<Credential> credentials = FileStorage.loadCredentials();
         if (credentials.isEmpty()) {
-            System.out.println("Nenhuma credencial cadastrada!");
+            LOGGER.info("Nenhuma credencial cadastrada.");
             return;
         }
 
         for (Credential c : credentials) {
             try {
                 String decryptedPassword = EncryptionService.decrypt(c.getEncryptedPassword(), masterPassword);
-                System.out.printf("Serviço: %s, Usuário: %s, Senha: %s%n",
-                        c.getService(), c.getUsername(), decryptedPassword);
+                LOGGER.info(String.format("Serviço: %s, Usuário: %s, Senha: %s",
+                        c.getService(), c.getUsername(), decryptedPassword));
             } catch (Exception e) {
-                System.out.println("Erro ao descriptografar a senha do serviço " + c.getService());
+                LOGGER.warning("Erro ao descriptografar a senha do serviço " + c.getService());
             }
         }
     }
@@ -107,9 +96,9 @@ public class Main {
 
         try {
             String senhaGerada = PasswordGenerator.generate(tamanho);
-            System.out.println("Senha gerada: " + senhaGerada);
+            LOGGER.info("Senha gerada: " + senhaGerada);
         } catch (IllegalArgumentException e) {
-            System.out.println("Erro: " + e.getMessage());
+            LOGGER.warning("Erro ao gerar senha: " + e.getMessage());
         }
     }
 
@@ -118,9 +107,20 @@ public class Main {
         String senhaVerificada = sc.nextLine();
 
         if (PasswordLeakChecker.isLeaked(senhaVerificada)) {
-            System.out.println("PERIGO: Essa senha já apareceu em vazamentos!");
+            LOGGER.warning("PERIGO: Essa senha já apareceu em vazamentos!");
         } else {
-            System.out.println("Essa senha é segura!");
+            LOGGER.info("Essa senha é segura!");
+        }
+    }
+    private static String readMasterPassword() {
+        Console console = System.console();
+        if (console != null) {
+            char[] passwordChars = console.readPassword("Digite sua senha mestra: ");
+            return new String(passwordChars);
+        } else {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Digite sua senha mestra: ");
+            return sc.nextLine();
         }
     }
 }

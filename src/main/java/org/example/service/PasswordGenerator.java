@@ -1,8 +1,11 @@
 package org.example.service;
 
 import java.security.SecureRandom;
+import java.util.logging.Logger;
 
 public class PasswordGenerator {
+    private static final Logger LOGGER = Logger.getLogger(PasswordGenerator.class.getName());
+
     private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String DIGITS = "0123456789";
@@ -13,7 +16,9 @@ public class PasswordGenerator {
 
     public static String generate(int length) {
         if (length < 12) {
-            throw new IllegalArgumentException("Senha deve ter no mínimo 12 caracteres.");
+            IllegalArgumentException ex = new IllegalArgumentException("Senha deve ter no mínimo 12 caracteres.");
+            LOGGER.warning(ex.getMessage());
+            throw ex;
         }
 
         StringBuilder sb = new StringBuilder(length);
@@ -49,4 +54,3 @@ public class PasswordGenerator {
         return new String(array);// retorna a nova string embaralhada
     }
 }
-

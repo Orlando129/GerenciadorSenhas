@@ -5,8 +5,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
+import java.util.logging.Logger;
 
 public class PasswordLeakChecker {
+
+    private static final Logger LOGGER = Logger.getLogger(PasswordLeakChecker.class.getName());
 
     public static boolean isLeaked(String password) {
         try {
@@ -38,7 +41,7 @@ public class PasswordLeakChecker {
             reader.close();
             return false; // A senha não foi encontrada
         } catch (Exception e) {
-            System.out.println("Erro ao verificar vazamento: " + e.getMessage());
+            LOGGER.warning("Erro ao verificar vazamento: " + e.getMessage());
             return false;
         }
     }
