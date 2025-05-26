@@ -48,7 +48,7 @@ public class PasswordLeakChecker {
 
     //Gera sha1 da string
     private static String sha1(String input) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("SHA-1"); //obrigatorio uso de Sha-1 pois a api pede
+        MessageDigest md = MessageDigest.getInstance("SHA-1"); //Obrigatorio uso de Sha-1 pois a api pede
         byte[] bytes = md.digest(input.getBytes("UTF-8"));
 
         StringBuilder sb = new StringBuilder();
