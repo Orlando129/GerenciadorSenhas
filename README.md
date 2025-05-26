@@ -25,4 +25,4 @@ Este projeto foi desenvolvido como parte da disciplina **Desenvolvimento Seguro*
 
 1. Clone ou baixe o projeto:
    ```bash
-   git clone https://github.com/seu-usuario/gerenciador-senhas-java.git
+   https://github.com/Orlando129/GerenciadorSenhas.git
