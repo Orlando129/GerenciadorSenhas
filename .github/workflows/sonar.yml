@@ -1,4 +1,6 @@
 name: SonarQube Scan
+permissions:
+  contents: read
 
 on:
   push:
