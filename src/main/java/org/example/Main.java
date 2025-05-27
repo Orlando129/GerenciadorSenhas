@@ -16,8 +16,8 @@ public class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName()); //Uso de Logger no projeto pois o Sonarcloud recomendou
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String masterPassword = readMasterPassword();
+        Scanner sc = new Scanner(System.in);//Scanner
+        String masterPassword = readMasterPassword();//Pede a chave mestre
 
         //Autenticacao de dois fatores
         if (!TwoFactorAuth.run2FA(sc)) {

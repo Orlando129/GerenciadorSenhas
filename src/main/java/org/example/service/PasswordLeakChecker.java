@@ -6,11 +6,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.logging.Logger;
-
+/**
+ * Classe responsável por verificar se uma senha foi comprometida.
+ * utilizando a API do serviço "Have I Been Pwned?".
+ */
 public class PasswordLeakChecker {
 
     private static final Logger LOGGER = Logger.getLogger(PasswordLeakChecker.class.getName());
-
+    //Verifica se uma senha foi vazada, utilizando a API do HIBP.
     public static boolean isLeaked(String password) {
         try {
             //gera hash sha1 da senha

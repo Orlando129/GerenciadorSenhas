@@ -2,10 +2,13 @@ package org.example.service;
 
 import java.security.SecureRandom;
 import java.util.logging.Logger;
-
+/**
+ * Classe responsável por gerar senhas seguras de forma aleatória,
+ * garantindo presença de letras maiúsculas, minúsculas, números e símbolos
+ */
 public class PasswordGenerator {
     private static final Logger LOGGER = Logger.getLogger(PasswordGenerator.class.getName());
-
+    // Conjuntos de caracteres usados na geração da senha
     private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String DIGITS = "0123456789";
@@ -13,7 +16,7 @@ public class PasswordGenerator {
     private static final String ALL = UPPER + LOWER + DIGITS + SYMBOLS;
 
     private static final SecureRandom random = new SecureRandom();
-
+    //Gera uma senha aleatorio com no minimo 12 caracteres
     public static String generate(int length) {
         if (length < 12) {
             IllegalArgumentException ex = new IllegalArgumentException("Senha deve ter no mínimo 12 caracteres.");
@@ -41,7 +44,7 @@ public class PasswordGenerator {
     private static char getRandomChar(String chars) {
         return chars.charAt(random.nextInt(chars.length()));
     }
-
+    //Embaralha uma string usando o algoritmo de Fisher-Yates para aleatoriedade real
     private static String shuffle(String input) {
         char[] array = input.toCharArray(); // transforma a string em um array de caracteres
         // Algoritmo Fisher-Yates de embaralhamento
