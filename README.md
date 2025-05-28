@@ -53,6 +53,12 @@ Este projeto foi desenvolvido como parte da disciplina **Desenvolvimento Seguro*
 - A ferramenta **SonarQube** foi utilizada para garantir que o código esteja livre de **vulnerabilidades conhecidas**, **códigos duplicados** e com alta **manutenibilidade**.
 - A análise é automatizada via GitHub Actions.
 
+### 🤖 Atualizações Automáticas com Dependabot
+
+- 🔍 Verifica automaticamente atualizações de dependências do projeto Maven (`pom.xml`)
+- 📬 Abre Pull Requests automáticos com as versões mais recentes das bibliotecas
+- 🛡️ Ajuda a manter o projeto atualizado e seguro contra vulnerabilidades conhecidas
+  
 ---
 
 ## 🚀 Como Executar
