@@ -53,6 +53,11 @@ Este projeto foi desenvolvido como parte da disciplina **Desenvolvimento Seguro*
 - A ferramenta **SonarQube** foi utilizada para garantir que o código esteja livre de **vulnerabilidades conhecidas**, **códigos duplicados** e com alta **manutenibilidade**.
 - A análise é automatizada via GitHub Actions.
 
+### 🕵️ Análise Estática com Semgrep
+- O **Semgrep** é uma ferramenta de análise estática de código focada em segurança.
+- Permite identificar padrões de código perigosos ou inconsistentes em tempo de desenvolvimento.
+- A análise é automatizada via **GitHub Actions**, com execuções agendadas semanalmente ou a cada *pull request*.
+
 ### 🤖 Atualizações Automáticas com Dependabot
 
 - 🔍 Verifica automaticamente atualizações de dependências do projeto Maven (`pom.xml`)
