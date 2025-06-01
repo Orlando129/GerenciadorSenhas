@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class PasswordLeakChecker {
 
     private static final Logger LOGGER = Logger.getLogger(PasswordLeakChecker.class.getName());
-    //Verifica se uma senha foi vazada, utilizando a API do HIBP.
+    //Verifica se uma senha foi vazada, utilizando a API do HIBP
     public static boolean isLeaked(String password) {
         try {
             //gera hash sha1 da senha
